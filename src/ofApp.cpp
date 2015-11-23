@@ -30,18 +30,11 @@ void ofApp::setup()
   ofLog(OF_LOG_NOTICE, "sequence force length = " + ofToString(sequenceForceLength ) + " seconds");
 
   sequence1.initialize(sequencePath1, sequenceForceLength);
-  
-  bool forceSize = ofToBool(xml.getValue("forcesize", "false"));
-  if(forceSize)
-  {
-    ofSetFullscreen(false);
-    ofSetWindowShape(sequence1.getWidth(), sequence1.getWidth());
-  }
-  
-
+  ofSetWindowShape(sequence1.getWidth(), sequence1.getHeight());
 
   totalFrameTime = 0;
-  preserveAspect = false;
+  bPreserveAspect = false;
+  bFullscreen = false;
 }
 
 
@@ -53,9 +46,7 @@ void ofApp::setup()
 void ofApp::update()
 {
   if(sequence1.hasNewFrames)
-  {
     sequence1.swapSequenceBuffers();
-  }
 }
 
 
@@ -64,14 +55,16 @@ void ofApp::update()
 //------------------------------------------------------------------------------
 void ofApp::draw()
 {
-  ofClear(126);
+  ofClear(64);
   
   if(sequence1.getIsInitialized())
-    sequence1.drawFrame( 0.0, 0.0, ofGetWidth(), ofGetHeight(), preserveAspect);
+    sequence1.drawFrame( 0.0, 0.0, ofGetWidth(), ofGetHeight(), bPreserveAspect);
   
   
-  if(ofGetElapsedTimeMillis() - sequenceCheckTimer > (float)sequenceCheckInterval * 1000.0)
+  if(ofGetElapsedTimeMillis() - sequenceCheckTimer > (float)sequenceCheckInterval * 1000.0){
+    sequenceCheckTimer = ofGetElapsedTimeMillis();
     sequence1.getNewFrames();
+  }
   
   
   totalFrameTime += ofGetLastFrameTime();
@@ -94,16 +87,15 @@ void ofApp::keyPressed(int key)
     sequence1.getNewFrames();
 
   if(key == 'a')
-      preserveAspect = !preserveAspect;
+      bPreserveAspect = !bPreserveAspect;
 
   if(key == 'f')
   {
-      ofSetFullscreen(false);
-      ofSetWindowShape(sequence1.getWidth(), sequence1.getWidth());
+      bFullscreen = !bFullscreen;
+      ofSetFullscreen(bFullscreen);
+      if(!bFullscreen)
+          ofSetWindowShape(sequence1.getWidth(), sequence1.getHeight());
   }
-
-  if(key == 'F')
-      ofSetFullscreen(true);
 
 }
 

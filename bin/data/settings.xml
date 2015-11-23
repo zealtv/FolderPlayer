@@ -1,4 +1,9 @@
-<checkinterval>600</checkinterval>
-<framerate>15</framerate>
+<checkinterval>60</checkinterval>
+<framerate>12</framerate>
+
+<path>brisbane</path>
+<!--
 <path>radar/</path>
-<forcelength>-1</forcelength>
+-->
+<forcelength>10</forcelength>
+<fullscreen>true</fullscreen>

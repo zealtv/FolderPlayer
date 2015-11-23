@@ -3,6 +3,7 @@
 #include "ofMain.h"
 #include "ofxXmlSettings.h"
 #include "sequence.h"
+#include "ofxGui.h"
 
 
 
@@ -15,20 +16,31 @@ public:
   void draw();
   void keyPressed(int key);
   
-  int framerate;
-  
   bool settingsLoaded;
   
   ofxXmlSettings xml;
   
   sequence sequence1;
   
-  int sequenceCheckInterval;
+
   int sequenceCheckTimer;
   
   float totalFrameTime;
   float targetFrameTime;
+
+  int framerate;
+  int sequenceCheckInterval;
   string sequencePath1;
-  bool preserveAspect;
+  bool bPreserveAspect;
+  bool bFullscreen;
+
+  ofxFloatSlider gFramerate;
+  ofxIntSlider gRefreshInterval;
+  ofxLabel gSequencePath;
+  //really want some sort of savable text entry
+
+
+
+
   
 };

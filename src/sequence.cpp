@@ -56,7 +56,14 @@ void sequence::getNextFrame()
   }
 
   if( !sequenceFrame.loadImage(frames[sequenceIndex]) )
-      ofLog(OF_LOG_NOTICE, "failed to load");
+  {
+      //remove unloadable frames
+      ofLog(OF_LOG_NOTICE, "Removing unreadable frame");
+
+      frames.erase(frames.begin() + sequenceIndex);
+      sequenceSize = frames.size();
+
+  }
 }
 
 
@@ -98,27 +105,26 @@ void sequence::drawFrame(float x, float y, float w, float h, bool preserveAspect
         float newW = getWidth();
         float newH = getHeight();
 
+
+        //aspect preserving doesn't work on wide images.
         if(preserveAspect)
         {
             float screenRatio = ofGetWidth()/ofGetHeight();
             float sequenceRatio = getWidth()/getHeight();
 
-            if(screenRatio < sequenceRatio)
+            if(screenRatio > sequenceRatio)
                 newH = newW * screenRatio;
             else
                 newW = newH / screenRatio;
 
             //then!
-
             float scale = h/newW;
             newH *= scale;
             newW *= scale;
-
             int newX = x + ofGetWidth()/2.0 - newW/2.0;
 
             sequenceFrame.draw( newX, y, newW, newH );
         }
-
         else
             sequenceFrame.draw( x, y, w, h );
     }
@@ -149,7 +155,7 @@ void sequence::threadedFunction()
 {
     while(isThreadRunning())
     {
-        ofDirectory dir( sequencePath );
+        ofDirectory dir(sequencePath);
 
         //only show png files
         dir.allowExt("png");
@@ -159,8 +165,10 @@ void sequence::threadedFunction()
         dir.sort();
 
         newFrames = dir.getFiles();
-        //can't clean like this because it uses openGL
+
         //cleanNewFrames();
+        //can't clean like this because it uses openGL
+
 
         if(newFrames.size() != frames.size() )
         {
@@ -170,9 +178,12 @@ void sequence::threadedFunction()
           hasNewFrames = true;
           stopThread();
         }
-        else ofLog( OF_LOG_NOTICE, "No new frames found" );
-
-        stopThread();
+        else
+        {
+            ofLog( OF_LOG_NOTICE, "No new frames found" );
+            hasNewFrames = false;
+            stopThread();
+        }
     }
 
 }
@@ -183,7 +194,7 @@ void sequence::threadedFunction()
 void sequence::swapSequenceBuffers()
 {
   ofLog( OF_LOG_NOTICE, "SWAPPING BUFFERS" );
-  cleanNewFrames();
+  //cleanNewFrames();
   frames = newFrames;
   sequenceSize = frames.size();
   sequenceIndex %= sequenceSize;
@@ -222,9 +233,9 @@ void sequence::cleanNewFrames()
         ofImage image;
         if(!image.loadImage(f))
         {
-            ofLog(OF_LOG_NOTICE, "failed to load... ");
             //todo
-            //remove f from newFrames
+            //remove f from newFrames if can't be loaded
+            //(cull dud frames)
         }
     }
 }
