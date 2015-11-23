@@ -133,6 +133,12 @@ void sequence::drawFrame(float x, float y, float w, float h, bool preserveAspect
 }
 
 
+//------------------------------------------------------------------------------
+ofTexture& sequence::getFrameTextureReference()
+{
+  return sequenceFrame.getTextureReference();
+}
+
 
 //------------------------------------------------------------------------------
 bool sequence::getIsInitialized()

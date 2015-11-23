@@ -4,6 +4,7 @@
 #include "ofxXmlSettings.h"
 #include "sequence.h"
 #include "ofxGui.h"
+#include "ofxSyphonServer.h"
 
 
 
@@ -38,9 +39,7 @@ public:
   ofxIntSlider gRefreshInterval;
   ofxLabel gSequencePath;
   //really want some sort of savable text entry
+  ofxSyphonServer syphonServer;
 
 
-
-
-  
 };

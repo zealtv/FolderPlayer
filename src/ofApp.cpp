@@ -31,6 +31,13 @@ void ofApp::setup()
 
   sequence1.initialize(sequencePath1, sequenceForceLength);
   ofSetWindowShape(sequence1.getWidth(), sequence1.getHeight());
+  
+  
+  
+  syphonServer.setName("Screen Output");
+  
+  
+  ofSetFrameRate(60); // if vertical sync is off, we can go a bit fast... this caps the framerate at 60fps.
 
   totalFrameTime = 0;
   bPreserveAspect = false;
@@ -58,7 +65,10 @@ void ofApp::draw()
   ofClear(64);
   
   if(sequence1.getIsInitialized())
+  {
     sequence1.drawFrame( 0.0, 0.0, ofGetWidth(), ofGetHeight(), bPreserveAspect);
+    syphonServer.publishTexture( &sequence1.getFrameTextureReference() );
+  }
   
   
   if(ofGetElapsedTimeMillis() - sequenceCheckTimer > (float)sequenceCheckInterval * 1000.0){

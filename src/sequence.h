@@ -16,6 +16,7 @@ public:
   bool hasNewFrames;
   int getWidth();
   int getHeight();
+  ofTexture& getFrameTextureReference();
   
 private:
   vector<ofFile> frames;
